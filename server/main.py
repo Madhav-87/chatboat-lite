@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-
+from services.ai_service import generate_ai_response
 app = FastAPI()
 
 app.add_middleware(
@@ -14,17 +14,21 @@ app.add_middleware(
 )
 
 class ChatRequest(BaseModel):
-    message: str = Field(min_length=1, max_length=5000)
+    id: str
+    role:str
+    text: str = Field(min_length=1, max_length=5000)
 
 class ChatResponse(BaseModel):
-    response: str
+    id: str
+    role:str
+    text:str
 
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(data: ChatRequest):
 
     # Extract the message from the received JSON
-    user_message = data.message.strip()
+    user_message = data.text.strip()
 
     # Send the message to the AI model
     ai_response = generate_ai_response(user_message)
