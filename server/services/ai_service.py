@@ -1,4 +1,18 @@
+from ollama import Client
+from config import HOST_URL, MODEL_CHOICE
+
+
 def generate_ai_response(message: str) -> str:
-    # Temporary example to test communication.
-    # Replace this with your local AI model's inference code.
-    return f"Your message was received: {message}"
+    client = Client(
+        host = HOST_URL
+    )
+    response=client.chat(
+        model = MODEL_CHOICE,
+        messages = [
+            {"role":"user", "content":message}
+        ]
+    )
+    txt = response.message.content
+    response = f"{txt}"
+    
+    return response
