@@ -152,4 +152,22 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Editor and OS files
+.vscode/
+.DS_Store
+
 # End of https://mrkandreev.name/snippets/gitignore-generator/#react,Python
