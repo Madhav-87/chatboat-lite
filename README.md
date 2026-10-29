@@ -102,7 +102,7 @@ ollama --version
 Clone the repository and open its folder:
 
 ```powershell
-git clone <repository-url>
+git clone https://github.com/Madhav-87/chatboat-lite.git
 cd aiChatBot
 ```
 
