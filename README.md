@@ -1,6 +1,6 @@
 # 🤖 Muse - Local AI Chatbot
 
-Muse is a simple web chat app for asking questions and getting text replies from an AI model. The React interface sends each prompt to a small Python API, which passes it to an Ollama model and returns the answer. The project is designed to make the connection between a web interface and a locally hosted AI model easy to understand.
+Muse is a simple web chat app for asking questions and getting text replies from an AI model. The React interface sends each prompt to a small Python API, which passes it to Qwen2.5-0.5B through Ollama and returns the answer. Muse is the name of this project and its chat interface; Qwen2.5 is the underlying model.
 
 ## 🎯 Project goals
 
@@ -13,7 +13,7 @@ The project provides a straightforward way to try an open-source language model 
 - Start a new chat by clearing the current conversation.
 - Use starter prompts, switch between light and dark themes, and copy an assistant response.
 - Call the backend with JSON and show a friendly error message if the service cannot be reached.
-- Connect the backend to an Ollama model selected in the server environment settings.
+- Connect the backend to the Qwen2.5-0.5B model through Ollama.
 
 Conversation history is held in the browser while the page is open. It is not saved to a database.
 
@@ -23,7 +23,7 @@ Conversation history is held in the browser while the page is open. It is not sa
 | --- | --- |
 | Frontend | JavaScript, React, Vite, HTML, CSS |
 | Backend | Python, FastAPI, Pydantic, Uvicorn |
-| Model connection | Ollama Python client and an Ollama model |
+| Model connection | Ollama Python client and Qwen2.5-0.5B (`qwen2.5:0.5b`) |
 | Configuration | `python-dotenv` and environment files |
 | API format | HTTP `POST` with JSON |
 
@@ -33,23 +33,30 @@ The SRS mentions Docker as a possible backend tool. The current repository does 
 
 ```mermaid
 flowchart LR
-    U[User] -->|Types a prompt| W[React web app\nVite development server]
-    W -->|POST /chat\n{ message: "..." }| A[FastAPI backend]
-    A -->|Prompt and model name| O[Ollama service]
+    U[User] -->|Enters prompt| W["React Web App<br/>Vite Development Server"]
+    W -->|POST /chat<br/>JSON: message| A["FastAPI Backend"]
+    A -->|Prompt + Model Name| O["Ollama Service"]
     O -->|Generated text| A
-    A -->|JSON { message: "..." }| W
-    W -->|Shows reply| U
+    A -->|JSON Response<br/>message| W
+    W -->|Displays Reply| U
+
+    style U fill:#ffffff,stroke:#333333,color:#000000
+    style W fill:#e8f0fe,stroke:#4285f4,color:#000000
+    style A fill:#e6f4ea,stroke:#34a853,color:#000000
+    style O fill:#fef7e0,stroke:#fbbc04,color:#000000
 ```
 
 The browser sends a request to the backend's `/chat` endpoint. The API validates the message, calls the configured Ollama model, and returns the response as JSON. The model call receives the latest prompt; the current backend does not send earlier chat messages as model context.
 
 ## 📸 Screenshots and demo
 
-There is no hosted demo or screenshot committed with the current project. To add a screenshot, save one from the running app as `docs/images/chat-interface.png` and update this section, for example:
-
-```md
-![Muse chat interface](docs/images/chat-interface.png)
-```
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/130439a0-580e-4751-b972-c202f0bd919d"
+    alt="Muse chatbot interface"
+    width="100%"
+  />
+</p>
 
 ## ✅ Prerequisites
 
@@ -57,7 +64,7 @@ There is no hosted demo or screenshot committed with the current project. To add
 - Node.js and npm (a current LTS release is recommended)
 - Python 3.10 or later
 - [Ollama](https://ollama.com/download) installed and running
-- An Ollama model downloaded on the computer running Ollama
+- Qwen2.5-0.5B downloaded in Ollama (`qwen2.5:0.5b`)
 
 Check that the tools are available:
 
@@ -79,21 +86,21 @@ cd aiChatBot
 
 ### 1. 🦙 Prepare Ollama
 
-Start the Ollama service, then download a model if you do not already have one. For example:
+Start the Ollama service, then download the model used by this project:
 
 ```powershell
-ollama pull llama3.2
+ollama pull qwen2.5:0.5b
 ```
 
-Use a model name that is installed in Ollama for `MODEL_CHOICE` below. You can choose another model supported by your computer.
+Ollama lists the model as `qwen2.5:0.5b`.
 
 ### 2. ⚙️ Configure the backend
 
-Create `server/.env` with these settings. Replace the sample model name if you downloaded a different model. Add the address where the browser will open the frontend to the allowed origins.
+Create `server/.env` with these settings. Add the address where the browser will open the frontend to the allowed origins.
 
 ```env
 HOST_URL=http://localhost:11434
-MODEL_CHOICE=llama3.2
+MODEL_CHOICE=qwen2.5:0.5b
 ALLOW_ORIGIN_URL_1=http://localhost:5173
 ALLOW_ORIGIN_URL_2=http://127.0.0.1:5173
 ```
@@ -202,7 +209,7 @@ aiChatBot/
 | Variable | File | Purpose |
 | --- | --- | --- |
 | `HOST_URL` | `server/.env` | Ollama service address, usually `http://localhost:11434` |
-| `MODEL_CHOICE` | `server/.env` | Installed Ollama model name to use for replies |
+| `MODEL_CHOICE` | `server/.env` | Installed Ollama model name; use `qwen2.5:0.5b` for this project |
 | `ALLOW_ORIGIN_URL_1` | `server/.env` | First browser origin allowed to call the API |
 | `ALLOW_ORIGIN_URL_2` | `server/.env` | Second browser origin allowed to call the API |
 | `VITE_CHAT_API_URL` | `client/.env` | Full backend chat endpoint used by the frontend |
@@ -226,4 +233,6 @@ Contributions are welcome. Open an issue to describe a bug or proposed change, t
 
 ## 📄 License
 
-No license file is included yet. Until a license is added, reuse and redistribution permissions have not been specified.
+Muse is the project's app name; this project does not claim to have created the Qwen model. Qwen2.5-0.5B is an upstream model from the Qwen team, available through [Ollama's Qwen2.5 library](https://ollama.com/library/qwen2.5). The model card lists the 0.5B model under the [Apache 2.0 license](https://huggingface.co/Qwen/Qwen2.5-0.5B). If you redistribute the model or a modified copy, follow the applicable license and preserve its required notices.
+
+No license file is included for Muse's own source code yet. Add a project license before inviting others to reuse or redistribute the code; the model's license does not automatically license this project.
