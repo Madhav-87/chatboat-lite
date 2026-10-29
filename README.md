@@ -48,7 +48,7 @@ flowchart LR
 
 The browser sends a request to the backend's `/chat` endpoint. The API validates the message, calls the configured Ollama model, and returns the response as JSON. The model call receives the latest prompt; the current backend does not send earlier chat messages as model context.
 
-### Explore the architecture
+### Explore the architecture components
 
 | Component | What it does | Open the code |
 | --- | --- | --- |
@@ -59,13 +59,15 @@ The browser sends a request to the backend's `/chat` endpoint. The API validates
 | Ollama connection | Sends the prompt to the configured Qwen model. | [ai_service.py](server/services/ai_service.py) |
 
 <details>
-  <summary>Show the request and response steps</summary>
+<summary>Request flow (click to open, click again to close)</summary>
 
-  1. The user enters a text prompt in the React chat window.
-  2. The client sends `POST /chat` with JSON like `{ "message": "Hello" }`.
-  3. FastAPI checks the message and passes it to Qwen2.5-0.5B through Ollama.
-  4. The backend returns JSON like `{ "message": "Hi!" }`.
-  5. The client displays the reply or shows an error if the request failed.
+<ol>
+  <li>The user enters a text prompt in the React chat window.</li>
+  <li>The client sends <code>POST /chat</code> with JSON like <code>{ "message": "Hello" }</code>.</li>
+  <li>FastAPI checks the message and passes it to Qwen2.5-0.5B through Ollama.</li>
+  <li>The backend returns JSON like <code>{ "message": "Hi!" }</code>.</li>
+  <li>The client displays the reply or shows an error if the request failed.</li>
+</ol>
 </details>
 
 ## 📸 Screenshots and demo
